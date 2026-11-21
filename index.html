@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0b1020">
+<title>ماوس DESKTOP-DDNCUOL</title>
+<style>
+  :root {
+    --bg: #080d1a;
+    --surface: #141e36;
+    --surface-top: #1f2e52;
+    --surface-bot: #11192e;
+    --border: #2d406e;
+    --accent: #38bdf8;
+    --accent-2: #6366f1;
+    --danger: #f43f5e;
+    --success: #22c55e;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+  }
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: radial-gradient(circle at 50% 0%, #111b36 0%, var(--bg) 70%);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", Tahoma, Arial, sans-serif;
+    touch-action: none;
+  }
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    padding: env(safe-area-inset-top, 6px) 10px env(safe-area-inset-bottom, 12px) 10px;
+    gap: 8px;
+  }
+
+  /* 3D Physical Button Base */
+  .btn3d {
+    background: linear-gradient(180deg, var(--surface-top) 0%, var(--surface-bot) 100%);
+    color: var(--text);
+    border: 1px solid var(--border);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.16),
+      inset 0 -1px 0 rgba(0, 0, 0, 0.35),
+      0 4px 0 #090e1d,
+      0 7px 14px rgba(0, 0, 0, 0.45);
+    transition: transform 0.07s ease, box-shadow 0.07s ease, border-color 0.12s ease, background 0.12s ease;
+    cursor: pointer;
+    position: relative;
+  }
+  .btn3d:active,
+  .btn3d.pressed {
+    transform: translateY(3px) scale(0.985);
+    background: linear-gradient(180deg, #2b3f73 0%, #1b284c 100%);
+    border-color: var(--accent);
+    box-shadow:
+      inset 0 2px 6px rgba(0, 0, 0, 0.45),
+      0 1px 0 #090e1d,
+      0 2px 8px rgba(56, 189, 248, 0.25);
+  }
+  .btn3d.active {
+    background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+    color: #041221;
+    border-color: #7dd3fc;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.45),
+      0 3px 0 #075985,
+      0 0 14px rgba(56, 189, 248, 0.35);
+  }
+
+  /* Top Bar */
+  .topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: linear-gradient(180deg, #17223d 0%, #10182d 100%);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 7px 10px;
+    flex-shrink: 0;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 700;
+    font-size: 13.5px;
+    min-width: 0;
+    overflow: hidden;
+  }
+  #statusText {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--danger);
+    box-shadow: 0 0 8px var(--danger);
+    flex-shrink: 0;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  .status-dot.connected {
+    background: var(--success);
+    box-shadow: 0 0 10px var(--success);
+  }
+  .top-actions {
+    display: flex;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+  .icon-btn {
+    border-radius: 10px;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    min-width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .icon-btn.notif-on {
+    border-color: var(--success);
+    color: #86efac;
+  }
+
+  .toast {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-80px);
+    background: #14532d;
+    color: #dcfce7;
+    border: 1px solid var(--success);
+    border-radius: 999px;
+    padding: 9px 18px;
+    font-size: 13.5px;
+    font-weight: 700;
+    z-index: 200;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    transition: transform 0.28s ease;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+  .toast.show {
+    transform: translateX(-50%) translateY(0);
+  }
+
+  /* Touchpad + Animated 3D Scroll Wheel */
+  .pad-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    gap: 9px;
+    min-height: 0;
+  }
+  .pad-wrapper.scroll-left {
+    flex-direction: row-reverse;
+  }
+  .touchpad {
+    flex: 1;
+    background: radial-gradient(circle at 50% 40%, #1b284a 0%, #0e1528 100%);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: none;
+    box-shadow:
+      inset 0 3px 14px rgba(0, 0, 0, 0.55),
+      0 2px 0 rgba(255, 255, 255, 0.05);
+  }
+  .touchpad.drag-active {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 28px rgba(56, 189, 248, 0.3);
+  }
+  .pad-hint {
+    text-align: center;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.85;
+    pointer-events: none;
+    opacity: 0.68;
+    padding: 12px;
+  }
+
+  /* Animated 3D Scroll Wheel Strip */
+  .scroll-strip {
+    width: 52px;
+    background: linear-gradient(90deg, #0b1121 0%, #182544 50%, #0b1121 100%);
+    border: 1.5px solid var(--border);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 6px;
+    touch-action: none;
+    position: relative;
+    box-shadow:
+      inset 0 4px 12px rgba(0, 0, 0, 0.65),
+      0 4px 0 #070b16;
+  }
+  .scroll-arrow {
+    font-size: 16px;
+    color: var(--muted);
+    transition: color 0.12s ease, transform 0.12s ease, text-shadow 0.12s ease;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .scroll-strip.dir-up .scroll-arrow.up {
+    color: var(--accent);
+    transform: translateY(-3px) scale(1.22);
+    text-shadow: 0 0 12px var(--accent);
+  }
+  .scroll-strip.dir-down .scroll-arrow.down {
+    color: var(--accent);
+    transform: translateY(3px) scale(1.22);
+    text-shadow: 0 0 12px var(--accent);
+  }
+  .wheel-drum {
+    flex: 1;
+    width: 30px;
+    margin: 8px 0;
+    border-radius: 12px;
+    border: 1px solid #354b80;
+    background-color: #16223e;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(148, 163, 184, 0.42) 0px,
+      rgba(148, 163, 184, 0.42) 3px,
+      rgba(8, 13, 26, 0.72) 3px,
+      rgba(8, 13, 26, 0.72) 11px
+    );
+    background-size: 100% 22px;
+    background-position: 0px 0px;
+    box-shadow:
+      inset 0 14px 14px -8px rgba(0, 0, 0, 0.85),
+      inset 0 -14px 14px -8px rgba(0, 0, 0, 0.85),
+      0 0 0 1px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  }
+  .scroll-strip.scrolling .wheel-drum {
+    border-color: var(--accent);
+    box-shadow:
+      inset 0 14px 14px -8px rgba(0, 0, 0, 0.85),
+      inset 0 -14px 14px -8px rgba(0, 0, 0, 0.85),
+      0 0 14px rgba(56, 189, 248, 0.35);
+  }
+
+  /* Mouse Buttons (3D) */
+  .mouse-buttons {
+    display: grid;
+    grid-template-columns: 1fr 0.55fr 1fr;
+    gap: 9px;
+    flex-shrink: 0;
+    padding-bottom: 3px;
+  }
+  .mbtn {
+    height: 60px;
+    border-radius: 15px;
+    font-size: 15px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 6px 0 #070c18,
+      0 10px 18px rgba(0, 0, 0, 0.5);
+  }
+  .mbtn:active,
+  .mbtn.pressed {
+    transform: translateY(5px) scale(0.985);
+    box-shadow:
+      inset 0 3px 8px rgba(0, 0, 0, 0.5),
+      0 1px 0 #070c18,
+      0 2px 10px rgba(56, 189, 248, 0.35);
+  }
+  .mbtn.mid {
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Quick Utility Row (3D) */
+  .util-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 7px;
+    flex-shrink: 0;
+  }
+  .ubtn {
+    height: 43px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 700;
+  }
+
+  /* Drawers */
+  .drawer {
+    display: none;
+    background: linear-gradient(180deg, #16213c 0%, #0f172b 100%);
+    border: 1px solid var(--border);
+    border-radius: 15px;
+    padding: 9px;
+    flex-shrink: 0;
+    gap: 8px;
+    flex-direction: column;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+  }
+  .drawer.open {
+    display: flex;
+  }
+  .live-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .text-input {
+    flex: 1;
+    background: #070c18;
+    color: var(--text);
+    border: 1.5px solid var(--border);
+    border-radius: 11px;
+    padding: 9px 11px;
+    font-size: 14.5px;
+    user-select: text;
+    -webkit-user-select: text;
+    outline: none;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+  }
+  .text-input:focus {
+    border-color: var(--accent);
+  }
+  .live-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #86efac;
+    background: rgba(34, 197, 94, 0.14);
+    border: 1px solid rgba(34, 197, 94, 0.45);
+    border-radius: 9px;
+    padding: 7px 8px;
+    white-space: nowrap;
+  }
+
+  /* Keyboard Sub-Tabs */
+  .kb-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .kb-tab {
+    height: 32px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .kb-pane {
+    display: none;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .kb-pane.open {
+    display: flex;
+  }
+  .key-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+  }
+  .key-grid.cols-5 {
+    grid-template-columns: repeat(5, 1fr);
+  }
+  .kbtn {
+    height: 36px;
+    border-radius: 9px;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 0 4px;
+  }
+  .kbtn.mod-btn {
+    color: #bae6fd;
+  }
+  .setting-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    font-size: 13px;
+  }
+  .setting-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+  }
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(5, 8, 18, 0.88);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 20px;
+  }
+  .modal-backdrop.show {
+    display: flex;
+  }
+  .modal {
+    width: 100%;
+    max-width: 320px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  .modal h3 { margin: 0; font-size: 17px; }
+  .modal p { margin: 0; font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div id="toast" class="toast">✅ تم الاتصال بالكمبيوتر</div>
+<div class="app">
+  <div class="topbar">
+    <div class="brand" id="brandStatus" title="حالة الاتصال">
+      <span id="statusDot" class="status-dot"></span>
+      <span id="statusText">جاري الاتصال...</span>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn btn3d" id="btnRefreshApp" title="تحديث الصفحة والاتصال">🔄</button>
+      <button class="icon-btn btn3d" id="btnNotify" title="تفعيل إشعارات الاتصال">🔔</button>
+      <button class="icon-btn btn3d" id="btnKeyboard" title="كيبورد كامل">⌨️</button>
+      <button class="icon-btn btn3d" id="btnMedia" title="ميديا وصوت">🎵</button>
+      <button class="icon-btn btn3d" id="btnSettings" title="إعدادات">⚙️</button>
+      <button class="icon-btn btn3d" id="btnFullscreen" title="ملء الشاشة">⛶</button>
+    </div>
+  </div>
+
+  <!-- Full PC Keyboard Drawer (Live Typing + Modifiers + Nav + F1-F12 + Shortcuts) -->
+  <div class="drawer" id="drawerKeyboard">
+    <div class="live-input-wrap">
+      <input type="text" id="textInput" class="text-input" placeholder="اكتب هنا وسيُكتب مباشرة على الكمبيوتر..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <span class="live-badge">⚡ مباشر</span>
+    </div>
+
+    <div class="kb-tabs">
+      <button class="kb-tab btn3d active" data-kbtab="kbMain">أساسي وتنقل</button>
+      <button class="kb-tab btn3d" data-kbtab="kbFunc">F1 – F12</button>
+      <button class="kb-tab btn3d" data-kbtab="kbShort">اختصارات</button>
+    </div>
+
+    <!-- Tab 1: Main, Sticky Modifiers & Navigation -->
+    <div class="kb-pane open" id="kbMain">
+      <div class="key-grid">
+        <button class="kbtn btn3d mod-btn" data-mod="ctrl">Ctrl</button>
+        <button class="kbtn btn3d mod-btn" data-mod="alt">Alt</button>
+        <button class="kbtn btn3d mod-btn" data-mod="shift">Shift</button>
+        <button class="kbtn btn3d mod-btn" data-mod="win">⊞ Win</button>
+      </div>
+      <div class="key-grid">
+        <button class="kbtn btn3d" data-key="esc">Esc</button>
+        <button class="kbtn btn3d" data-key="tab">Tab ⇥</button>
+        <button class="kbtn btn3d" data-key="capslock">Caps</button>
+        <button class="kbtn btn3d" data-key="backspace">⌫ Back</button>
+
+        <button class="kbtn btn3d" data-key="insert">Ins</button>
+        <button class="kbtn btn3d" data-key="delete">Del</button>
+        <button class="kbtn btn3d" data-key="home">Home</button>
+        <button class="kbtn btn3d" data-key="end">End</button>
+
+        <button class="kbtn btn3d" data-key="pageup">PgUp</button>
+        <button class="kbtn btn3d" data-key="up">▲</button>
+        <button class="kbtn btn3d" data-key="pagedown">PgDn</button>
+        <button class="kbtn btn3d" data-key="printscreen">PrtScr</button>
+
+        <button class="kbtn btn3d" data-key="right">▶</button>
+        <button class="kbtn btn3d" data-key="down">▼</button>
+        <button class="kbtn btn3d" data-key="left">◀</button>
+        <button class="kbtn btn3d" data-key="enter">Enter ↵</button>
+      </div>
+      <div class="key-grid">
+        <button class="kbtn btn3d" data-key="space" style="grid-column: span 2;">مسافة (Space)</button>
+        <button class="kbtn btn3d" data-combo="alt,shift">🌐 تغيير اللغة</button>
+        <button class="kbtn btn3d" data-key="apps">☰ قائمة</button>
+      </div>
+    </div>
+
+    <!-- Tab 2: F1 to F12 -->
+    <div class="kb-pane" id="kbFunc">
+      <div class="key-grid">
+        <button class="kbtn btn3d" data-key="f1">F1</button>
+        <button class="kbtn btn3d" data-key="f2">F2</button>
+        <button class="kbtn btn3d" data-key="f3">F3</button>
+        <button class="kbtn btn3d" data-key="f4">F4</button>
+        <button class="kbtn btn3d" data-key="f5">F5</button>
+        <button class="kbtn btn3d" data-key="f6">F6</button>
+        <button class="kbtn btn3d" data-key="f7">F7</button>
+        <button class="kbtn btn3d" data-key="f8">F8</button>
+        <button class="kbtn btn3d" data-key="f9">F9</button>
+        <button class="kbtn btn3d" data-key="f10">F10</button>
+        <button class="kbtn btn3d" data-key="f11">F11</button>
+        <button class="kbtn btn3d" data-key="f12">F12</button>
+      </div>
+    </div>
+
+    <!-- Tab 3: Power Shortcuts -->
+    <div class="kb-pane" id="kbShort">
+      <div class="key-grid">
+        <button class="kbtn btn3d" data-combo="ctrl,c">نسخ</button>
+        <button class="kbtn btn3d" data-combo="ctrl,v">لصق</button>
+        <button class="kbtn btn3d" data-combo="ctrl,x">قص</button>
+        <button class="kbtn btn3d" data-combo="ctrl,a">تحديد الكل</button>
+
+        <button class="kbtn btn3d" data-combo="ctrl,z">تراجع</button>
+        <button class="kbtn btn3d" data-combo="ctrl,y">إعادة</button>
+        <button class="kbtn btn3d" data-combo="ctrl,s">حفظ</button>
+        <button class="kbtn btn3d" data-combo="ctrl,f">بحث</button>
+
+        <button class="kbtn btn3d" data-combo="alt,tab">تبديل نافذة</button>
+        <button class="kbtn btn3d" data-combo="win,d">سطح المكتب</button>
+        <button class="kbtn btn3d" data-combo="win,e">الملفات</button>
+        <button class="kbtn btn3d" data-combo="win,l">قفل الجهاز</button>
+
+        <button class="kbtn btn3d" data-combo="ctrl,t">تبويب جديد</button>
+        <button class="kbtn btn3d" data-combo="ctrl,w">إغلاق تبويب</button>
+        <button class="kbtn btn3d" data-combo="ctrl,shift,esc">مدير المهام</button>
+        <button class="kbtn btn3d" data-combo="alt,f4">إغلاق نافذة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Media Drawer -->
+  <div class="drawer" id="drawerMedia">
+    <div class="key-grid">
+      <button class="kbtn btn3d" data-key="vol_up">🔊 رفع</button>
+      <button class="kbtn btn3d" data-key="vol_down">🔉 خفض</button>
+      <button class="kbtn btn3d" data-key="vol_mute">🔇 كتم</button>
+      <button class="kbtn btn3d" data-key="media_play">⏯️ تشغيل</button>
+      <button class="kbtn btn3d" data-key="media_prev">⏮️ السابق</button>
+      <button class="kbtn btn3d" data-key="media_next">⏭️ التالي</button>
+      <button class="kbtn btn3d" data-key="f5">🔄 F5</button>
+      <button class="kbtn btn3d" data-key="f11">⛶ ملء شاشة</button>
+    </div>
+  </div>
+
+  <!-- Settings Drawer -->
+  <div class="drawer" id="drawerSettings">
+    <div class="setting-row">
+      <span>سرعة الماوس (<b id="sensVal">1.8</b>)</span>
+      <input type="range" id="sensRange" min="0.5" max="4.5" step="0.1" value="1.8">
+    </div>
+    <div class="setting-row">
+      <span>سرعة التمرير (<b id="scrollVal">1.5</b>)</span>
+      <input type="range" id="scrollRange" min="0.5" max="4.0" step="0.1" value="1.5">
+    </div>
+    <div class="setting-row">
+      <span>عكس اتجاه التمرير</span>
+      <input type="checkbox" id="invertScroll">
+    </div>
+    <div class="setting-row">
+      <span>نقل شريط البكرة لليسار</span>
+      <input type="checkbox" id="scrollLeftSide">
+    </div>
+    <div class="setting-row">
+      <span>صوت واهتزاز عند الاتصال</span>
+      <input type="checkbox" id="soundOnConnect">
+    </div>
+    <div class="setting-row" style="border-top:1px solid var(--border); padding-top:8px;">
+      <span>عنوان DESKTOP-DDNCUOL</span>
+      <input type="text" id="hostInput" class="text-input" style="max-width:165px; padding:6px 8px; font-size:13px;" dir="ltr" placeholder="192.168.1.x:8765">
+    </div>
+    <div class="key-grid" style="grid-template-columns:1fr 1fr;">
+      <button class="kbtn btn3d" id="btnSaveHost">💾 حفظ والاتصال</button>
+      <button class="kbtn btn3d" id="btnScanPC">🔍 بحث تلقائي</button>
+    </div>
+  </div>
+
+  <!-- Animated 3D Scroll Wheel (RIGHT by default in RTL) + Touchpad -->
+  <div class="pad-wrapper" id="padWrapper">
+    <div class="scroll-strip" id="scrollStrip" title="شريط البكرة">
+      <span class="scroll-arrow up">▲</span>
+      <div class="wheel-drum" id="wheelDrum"></div>
+      <span class="scroll-arrow down">▼</span>
+    </div>
+    <div class="touchpad" id="touchpad">
+      <div class="pad-hint">
+        حرّك بإصبع واحد للماوس • لمسة = كليك شمال • لمستان = دبل كليك<br>
+        لمسة بإصبعين = كليك يمين • سحب بإصبعين معاً = سكرول<br>
+        تثبيت إصبع + سحب بالآخر = تظليل عدة ملفات وسحب منطقة
+      </div>
+    </div>
+  </div>
+
+  <!-- 3D Quick Utility Row with Refresh (F5) -->
+  <div class="util-row">
+    <button class="ubtn btn3d" id="btnDragLock">🧲 سحب</button>
+    <button class="ubtn btn3d" id="btnDoubleClick">⚡ دبل كليك</button>
+    <button class="ubtn btn3d" data-key="f5">🔄 Refresh</button>
+    <button class="ubtn btn3d" data-key="enter">↵ Enter</button>
+  </div>
+
+  <!-- 3D Mouse Buttons -->
+  <div class="mouse-buttons" dir="ltr">
+    <button class="mbtn btn3d" id="btnLeft">كليك شمال</button>
+    <button class="mbtn btn3d mid" id="btnMiddle">وسط</button>
+    <button class="mbtn btn3d" id="btnRight">كليك يمين</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="pinModal">
+  <div class="modal">
+    <h3>🔐 أدخل رمز الحماية</h3>
+    <p>السيرفر محمي برمز PIN</p>
+    <input type="password" id="pinInput" class="text-input" inputmode="numeric" placeholder="أدخل الرمز">
+    <button class="ubtn btn3d active" style="height:44px;" id="btnPinSubmit">اتصال</button>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="hostModal">
+  <div class="modal">
+    <h3>🖥️ ربط حصري بجهاز DESKTOP-DDNCUOL</h3>
+    <p id="scanStatus">أدخل IP الكمبيوتر مرة واحدة أو اضغط بحث تلقائي على الواي فاي</p>
+    <input type="text" id="modalHostInput" class="text-input" dir="ltr" placeholder="192.168.1.5:8765">
+    <button class="ubtn btn3d active" style="height:44px;" id="btnModalConnect">اتصال بـ DESKTOP-DDNCUOL</button>
+    <button class="ubtn btn3d" style="height:42px;" id="btnModalScan">🔍 بحث تلقائي عن DESKTOP-DDNCUOL</button>
+  </div>
+</div>
+
+<script>
+(() => {
+  const LOCKED_PC = "DESKTOP-DDNCUOL";
+  const DEFAULT_PORT = 8765;
+  let PIN_REQUIRED = false;
+  const PC_NAME = LOCKED_PC;
+  let savedHost = localStorage.getItem("wm_locked_host") || "";
+  let savedPin = localStorage.getItem("wm_pin") || "";
+  let sensitivity = parseFloat(localStorage.getItem("wm_sens") || "1.8");
+  let scrollSpeed = parseFloat(localStorage.getItem("wm_scroll") || "1.5");
+  let invertScroll = localStorage.getItem("wm_invert") === "1";
+  let scrollLeftSide = localStorage.getItem("wm_scroll_left") === "1";
+  let soundOnConnect = localStorage.getItem("wm_sound") !== "0";
+
+  const statusDot = document.getElementById("statusDot");
+  const statusText = document.getElementById("statusText");
+  const padWrapper = document.getElementById("padWrapper");
+  const touchpad = document.getElementById("touchpad");
+  const scrollStrip = document.getElementById("scrollStrip");
+  const wheelDrum = document.getElementById("wheelDrum");
+  const pinModal = document.getElementById("pinModal");
+  const pinInput = document.getElementById("pinInput");
+  const toastEl = document.getElementById("toast");
+  const btnNotify = document.getElementById("btnNotify");
+
+  // Tactile 3D press animation on touch for all buttons
+  document.querySelectorAll(".btn3d").forEach((el) => {
+    if (el.id === "btnLeft" || el.id === "btnMiddle" || el.id === "btnRight") return;
+    el.addEventListener("touchstart", () => el.classList.add("pressed"), { passive: true });
+    el.addEventListener("touchend", () => el.classList.remove("pressed"), { passive: true });
+    el.addEventListener("touchcancel", () => el.classList.remove("pressed"), { passive: true });
+  });
+
+  // Topbar Refresh button (reloads UI + reconnects)
+  document.getElementById("btnRefreshApp").addEventListener("click", () => {
+    buzz(14);
+    location.reload();
+  });
+
+  // Keyboard Sub-Tabs
+  document.querySelectorAll("[data-kbtab]").forEach((tabBtn) => {
+    tabBtn.addEventListener("click", () => {
+      buzz(8);
+      document.querySelectorAll("[data-kbtab]").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".kb-pane").forEach((p) => p.classList.remove("open"));
+      tabBtn.classList.add("active");
+      document.getElementById(tabBtn.dataset.kbtab).classList.add("open");
+    });
+  });
+
+  // Sticky Modifiers (Ctrl / Alt / Shift / Win)
+  const activeMods = new Set();
+  function clearMods() {
+    activeMods.clear();
+    document.querySelectorAll("[data-mod]").forEach((b) => b.classList.remove("active"));
+  }
+  document.querySelectorAll("[data-mod]").forEach((modBtn) => {
+    modBtn.addEventListener("click", () => {
+      const m = modBtn.dataset.mod;
+      buzz(10);
+      if (activeMods.has(m)) {
+        // Second tap on Win sends Win key alone; others just toggle off
+        activeMods.delete(m);
+        modBtn.classList.remove("active");
+        if (m === "win") sendAction({ t: "k", k: "win" });
+      } else {
+        activeMods.add(m);
+        modBtn.classList.add("active");
+      }
+    });
+  });
+
+  // Register Service Worker for PWA + Android Notifications
+  let swReg = null;
+  // Standalone Android HTML/APK mode — no external SW required
+
+  function updateNotifyBtn() {
+    if (!("Notification" in window)) {
+      btnNotify.style.display = "none";
+      return;
+    }
+    const granted = Notification.permission === "granted";
+    btnNotify.classList.toggle("notif-on", granted);
+    btnNotify.textContent = granted ? "🔔✓" : "🔔";
+  }
+  updateNotifyBtn();
+
+  btnNotify.addEventListener("click", async () => {
+    if (!("Notification" in window)) return;
+    const perm = await Notification.requestPermission();
+    updateNotifyBtn();
+    if (perm === "granted") {
+      showToast("تم تفعيل إشعارات الاتصال ✅");
+      sendSystemNotification("إشعارات الماوس مفعّلة", `سيتم تنبيهك تلقائياً عند الاتصال بجهاز ${PC_NAME}`);
+    } else {
+      showToast("لم يتم السماح بالإشعارات من المتصفح");
+    }
+  });
+
+  let toastTimer = null;
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove("show"), 2600);
+  }
+
+  function playConnectChime() {
+    if (!soundOnConnect) return;
+    try {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const now = ctx.currentTime;
+      [660, 880].forEach((freq, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+        gain.gain.setValueAtTime(0.08, now + idx * 0.11);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.14);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(now + idx * 0.11);
+        osc.stop(now + idx * 0.11 + 0.15);
+      });
+    } catch (_) {}
+  }
+
+  function sendSystemNotification(title, body) {
+    if (!("Notification" in window) || Notification.permission !== "granted") return;
+    const opts = { body, tag: "wifi-mouse-connected", renotify: true, vibrate: [120, 60, 120] };
+    if (swReg && swReg.showNotification) {
+      swReg.showNotification(title, opts).catch(() => {});
+    } else {
+      try { new Notification(title, opts); } catch (_) {}
+    }
+  }
+
+  function notifyConnected() {
+    if (navigator.vibrate) navigator.vibrate([110, 50, 110]);
+    playConnectChime();
+    showToast(`✅ تم الاتصال بجهاز ${PC_NAME}`);
+    sendSystemNotification("تم الاتصال بالكمبيوتر ✅", `الموبايل متصل الآن بجهاز ${PC_NAME} وجاهز للتحكم`);
+  }
+
+  // Settings UI init
+  const sensRange = document.getElementById("sensRange");
+  const sensVal = document.getElementById("sensVal");
+  const scrollRange = document.getElementById("scrollRange");
+  const scrollVal = document.getElementById("scrollVal");
+  const invertCheckbox = document.getElementById("invertScroll");
+  const scrollLeftCheckbox = document.getElementById("scrollLeftSide");
+  const soundCheckbox = document.getElementById("soundOnConnect");
+  sensRange.value = sensitivity;
+  sensVal.textContent = sensitivity.toFixed(1);
+  scrollRange.value = scrollSpeed;
+  scrollVal.textContent = scrollSpeed.toFixed(1);
+  invertCheckbox.checked = invertScroll;
+  scrollLeftCheckbox.checked = scrollLeftSide;
+  padWrapper.classList.toggle("scroll-left", scrollLeftSide);
+  soundCheckbox.checked = soundOnConnect;
+
+  sensRange.addEventListener("input", () => {
+    sensitivity = parseFloat(sensRange.value);
+    sensVal.textContent = sensitivity.toFixed(1);
+    localStorage.setItem("wm_sens", String(sensitivity));
+  });
+  scrollRange.addEventListener("input", () => {
+    scrollSpeed = parseFloat(scrollRange.value);
+    scrollVal.textContent = scrollSpeed.toFixed(1);
+    localStorage.setItem("wm_scroll", String(scrollSpeed));
+  });
+  invertCheckbox.addEventListener("change", () => {
+    invertScroll = invertCheckbox.checked;
+    localStorage.setItem("wm_invert", invertScroll ? "1" : "0");
+  });
+  scrollLeftCheckbox.addEventListener("change", () => {
+    scrollLeftSide = scrollLeftCheckbox.checked;
+    padWrapper.classList.toggle("scroll-left", scrollLeftSide);
+    localStorage.setItem("wm_scroll_left", scrollLeftSide ? "1" : "0");
+  });
+  soundCheckbox.addEventListener("change", () => {
+    soundOnConnect = soundCheckbox.checked;
+    localStorage.setItem("wm_sound", soundOnConnect ? "1" : "0");
+  });
+
+  // Auto-Reconnect WebSocket + Keepalive
+  let ws = null;
+  let reconnectTimer = null;
+  let keepaliveTimer = null;
+  let wasConnected = false;
+
+  function setStatus(connected, label) {
+    statusDot.classList.toggle("connected", connected);
+    statusText.textContent = label;
+  }
+
+  const hostModal = document.getElementById("hostModal");
+  const modalHostInput = document.getElementById("modalHostInput");
+  const hostInput = document.getElementById("hostInput");
+  const scanStatus = document.getElementById("scanStatus");
+
+  function normalizeHost(raw) {
+    let h = (raw || "").trim().replace(/^https?:\/\//i, "").replace(/\/.*$/, "");
+    if (!h) return "";
+    if (!h.includes(":")) h += ":" + DEFAULT_PORT;
+    return h;
+  }
+
+  if (savedHost) {
+    hostInput.value = savedHost;
+    modalHostInput.value = savedHost;
+  }
+
+  async function verifyLockedPC(host, timeoutMs = 1500) {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+    try {
+      const r = await fetch(`http://${host}/api/info`, { signal: ctrl.signal, cache: "no-store" });
+      clearTimeout(timer);
+      if (!r.ok) return { ok: false, reason: "offline" };
+      const data = await r.json();
+      if (data.app !== "wifi_mouse_server") return { ok: false, reason: "wrong_app" };
+      if ((data.pc || "").toUpperCase() !== LOCKED_PC.toUpperCase()) {
+        return { ok: false, reason: "wrong_pc", found: data.pc };
+      }
+      PIN_REQUIRED = !!data.pin_required;
+      return { ok: true, host };
+    } catch (_) {
+      clearTimeout(timer);
+      return { ok: false, reason: "offline" };
+    }
+  }
+
+  let scanning = false;
+  async function scanForLockedPC() {
+    if (scanning) return;
+    scanning = true;
+    scanStatus.textContent = `جاري البحث عن ${LOCKED_PC} على شبكة الواي فاي...`;
+    setStatus(false, `بحث عن ${LOCKED_PC}...`);
+
+    // Try mDNS hostname first, then saved subnet or common 192.168.1.x / 192.168.0.x
+    const firstTry = await verifyLockedPC(`${LOCKED_PC}.local:${DEFAULT_PORT}`, 900);
+    if (firstTry.ok) {
+      finishFound(firstTry.host);
+      scanning = false;
+      return;
+    }
+
+    const prefixes = [];
+    const m = savedHost.match(/^(\d+\.\d+\.\d+)\./);
+    if (m) prefixes.push(m[1]);
+    if (!prefixes.includes("192.168.1")) prefixes.push("192.168.1");
+    if (!prefixes.includes("192.168.0")) prefixes.push("192.168.0");
+
+    for (const prefix of prefixes) {
+      for (let start = 2; start <= 254; start += 25) {
+        const batch = [];
+        for (let i = start; i < Math.min(start + 25, 255); i++) {
+          batch.push(verifyLockedPC(`${prefix}.${i}:${DEFAULT_PORT}`, 650));
+        }
+        const results = await Promise.all(batch);
+        const match = results.find((x) => x.ok);
+        if (match) {
+          finishFound(match.host);
+          scanning = false;
+          return;
+        }
+      }
+    }
+    scanning = false;
+    scanStatus.textContent = `لم يتم العثور على ${LOCKED_PC}. تأكد من تشغيل الكمبيوتر والواي فاي أو أدخل IP يدوياً.`;
+    setStatus(false, `في انتظار ${LOCKED_PC}...`);
+  }
+
+  function finishFound(host) {
+    savedHost = host;
+    localStorage.setItem("wm_locked_host", host);
+    hostInput.value = host;
+    modalHostInput.value = host;
+    hostModal.classList.remove("show");
+    showToast(`✅ تم العثور على ${LOCKED_PC}`);
+    connectWS();
+  }
+
+  async function saveAndConnect(rawVal) {
+    const h = normalizeHost(rawVal);
+    if (!h) return;
+    scanStatus.textContent = `جاري التحقق من هوية الجهاز (${LOCKED_PC})...`;
+    const check = await verifyLockedPC(h, 2000);
+    if (!check.ok) {
+      if (check.reason === "wrong_pc") {
+        scanStatus.textContent = `⛔ مرفوض! هذا الجهاز (${check.found}) ليس ${LOCKED_PC}. التطبيق مرتبط حصرياً بـ ${LOCKED_PC}.`;
+        showToast(`⛔ جهاز غير مصرح (${check.found})`);
+      } else {
+        savedHost = h;
+        localStorage.setItem("wm_locked_host", h);
+        hostInput.value = h;
+        modalHostInput.value = h;
+        hostModal.classList.remove("show");
+        connectWS();
+      }
+      return;
+    }
+    finishFound(h);
+  }
+
+  document.getElementById("btnModalConnect").addEventListener("click", () => saveAndConnect(modalHostInput.value));
+  document.getElementById("btnSaveHost").addEventListener("click", () => saveAndConnect(hostInput.value));
+  document.getElementById("btnModalScan").addEventListener("click", scanForLockedPC);
+  document.getElementById("btnScanPC").addEventListener("click", () => {
+    hostModal.classList.add("show");
+    scanForLockedPC();
+  });
+
+  async function connectWS() {
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
+    if (!savedHost) {
+      hostModal.classList.add("show");
+      return;
+    }
+    // Verify exclusive PC identity before opening WebSocket
+    const check = await verifyLockedPC(savedHost, 1500);
+    if (!check.ok) {
+      if (check.reason === "wrong_pc") {
+        setStatus(false, "⛔ جهاز غير مصرح");
+        showToast(`⛔ مرفوض: مرتبط حصرياً بـ ${LOCKED_PC}`);
+        return;
+      }
+      setStatus(false, `في انتظار ${LOCKED_PC}...`);
+      scheduleReconnect();
+      return;
+    }
+    if (PIN_REQUIRED && !savedPin) {
+      pinModal.classList.add("show");
+      return;
+    }
+    const query = savedPin ? `?pin=${encodeURIComponent(savedPin)}` : "";
+    try {
+      ws = new WebSocket(`ws://${savedHost}/ws${query}`);
+    } catch (e) {
+      setStatus(false, `في انتظار ${LOCKED_PC}...`);
+      scheduleReconnect();
+      return;
+    }
+    ws.onopen = () => {
+      pinModal.classList.remove("show");
+      hostModal.classList.remove("show");
+      setStatus(true, `متصل (${LOCKED_PC})`);
+      if (!wasConnected) {
+        wasConnected = true;
+        notifyConnected();
+      }
+      clearInterval(keepaliveTimer);
+      keepaliveTimer = setInterval(() => {
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ t: "ping" }));
+        }
+      }, 15000);
+    };
+    ws.onmessage = (ev) => {
+      if (ev.data === "AUTH_FAIL") {
+        savedPin = "";
+        localStorage.removeItem("wm_pin");
+        pinModal.classList.add("show");
+        setStatus(false, "رمز PIN غير صحيح");
+      }
+    };
+    ws.onclose = () => {
+      clearInterval(keepaliveTimer);
+      wasConnected = false;
+      setStatus(false, `في انتظار ${LOCKED_PC}...`);
+      scheduleReconnect();
+    };
+    ws.onerror = () => {
+      try { ws.close(); } catch (_) {}
+    };
+  }
+
+  function scheduleReconnect() {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = setTimeout(connectWS, 1500);
+  }
+
+  window.addEventListener("online", connectWS);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible") connectWS();
+  });
+
+  document.getElementById("btnPinSubmit").addEventListener("click", () => {
+    savedPin = pinInput.value.trim();
+    if (!savedPin) return;
+    localStorage.setItem("wm_pin", savedPin);
+    pinModal.classList.remove("show");
+    connectWS();
+  });
+
+  function sendAction(payload) {
+    if (ws && ws.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify(payload));
+    } else {
+      if (savedPin) payload.pin = savedPin;
+      if (!savedHost) return; fetch(`http://${savedHost}/api/action`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }).catch(() => {});
+    }
+  }
+
+  function buzz(ms = 12) {
+    if (navigator.vibrate) navigator.vibrate(ms);
+  }
+
+  // Animated Scroll Wheel Visual Feedback
+  let wheelOffset = 0;
+  let wheelDirTimer = null;
+  function animateWheel(deltaY) {
+    wheelOffset = (wheelOffset + deltaY) % 22;
+    wheelDrum.style.backgroundPosition = `0px ${wheelOffset}px`;
+    scrollStrip.classList.add("scrolling");
+    if (deltaY < -0.5) {
+      scrollStrip.classList.add("dir-up");
+      scrollStrip.classList.remove("dir-down");
+    } else if (deltaY > 0.5) {
+      scrollStrip.classList.add("dir-down");
+      scrollStrip.classList.remove("dir-up");
+    }
+    clearTimeout(wheelDirTimer);
+    wheelDirTimer = setTimeout(() => {
+      scrollStrip.classList.remove("scrolling", "dir-up", "dir-down");
+    }, 260);
+  }
+
+  // Smooth move batching
+  let accX = 0, accY = 0, rafScheduled = false;
+  function queueMove(dx, dy) {
+    const speed = Math.hypot(dx, dy);
+    const boost = speed > 14 ? 1.45 : (speed > 6 ? 1.15 : 1.0);
+    accX += dx * sensitivity * boost;
+    accY += dy * sensitivity * boost;
+    if (!rafScheduled) {
+      rafScheduled = true;
+      requestAnimationFrame(() => {
+        rafScheduled = false;
+        const ix = Math.trunc(accX);
+        const iy = Math.trunc(accY);
+        if (ix !== 0 || iy !== 0) {
+          accX -= ix;
+          accY -= iy;
+          sendAction({ t: "m", dx: ix, dy: iy });
+        }
+      });
+    }
+  }
+
+  // Touchpad Gestures (including Hold-1-Finger + Drag-Other for Box Selection)
+  let activeTouches = new Map();
+  let touchStartTime = 0;
+  let totalMove = 0;
+  let maxFingerCount = 0;
+  let lastTapTime = 0;
+  let scrollAcc = 0;
+  let twoFingerMode = null; // null | "scroll" | "select"
+  let anchorFingerId = null;
+  let dragFingerId = null;
+
+  function endTwoFingerSelect() {
+    if (twoFingerMode === "select") {
+      twoFingerMode = null;
+      anchorFingerId = null;
+      dragFingerId = null;
+      if (!dragLocked) {
+        touchpad.classList.remove("drag-active");
+        sendAction({ t: "u", b: "left" });
+      }
+    }
+  }
+
+  touchpad.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    if (activeTouches.size === 0) {
+      touchStartTime = performance.now();
+      totalMove = 0;
+      maxFingerCount = e.touches.length;
+      twoFingerMode = null;
+      anchorFingerId = null;
+      dragFingerId = null;
+    } else {
+      maxFingerCount = Math.max(maxFingerCount, e.touches.length);
+    }
+    for (const t of e.changedTouches) {
+      activeTouches.set(t.identifier, {
+        x: t.clientX,
+        y: t.clientY,
+        startX: t.clientX,
+        startY: t.clientY,
+        moved: 0,
+      });
+      // If already in select mode and anchor is still down, adopt new touch as drag finger
+      if (twoFingerMode === "select" && anchorFingerId !== null && dragFingerId === null && t.identifier !== anchorFingerId) {
+        dragFingerId = t.identifier;
+      }
+    }
+    // Reset baseline when transitioning to 2 fingers so hold-vs-scroll detection is crisp
+    if (e.touches.length === 2 && twoFingerMode === null) {
+      for (const t of e.touches) {
+        const st = activeTouches.get(t.identifier);
+        if (st) {
+          st.startX = t.clientX;
+          st.startY = t.clientY;
+          st.moved = 0;
+        }
+      }
+    }
+  }, { passive: false });
+
+  touchpad.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    if (e.touches.length === 1) {
+      // If anchor finger is still down alone during select mode, keep left button held
+      if (twoFingerMode === "select") {
+        const t = e.touches[0];
+        const prev = activeTouches.get(t.identifier);
+        if (prev) {
+          prev.x = t.clientX;
+          prev.y = t.clientY;
+        }
+        return;
+      }
+      const t = e.touches[0];
+      const prev = activeTouches.get(t.identifier);
+      if (prev) {
+        const dx = t.clientX - prev.x;
+        const dy = t.clientY - prev.y;
+        const step = Math.hypot(dx, dy);
+        totalMove += step;
+        prev.moved += step;
+        queueMove(dx, dy);
+        prev.x = t.clientX;
+        prev.y = t.clientY;
+      }
+    } else if (e.touches.length === 2) {
+      const t0 = e.touches[0], t1 = e.touches[1];
+      const p0 = activeTouches.get(t0.identifier);
+      const p1 = activeTouches.get(t1.identifier);
+      if (p0 && p1) {
+        const dx0 = t0.clientX - p0.x, dy0 = t0.clientY - p0.y;
+        const dx1 = t1.clientX - p1.x, dy1 = t1.clientY - p1.y;
+        p0.moved += Math.hypot(dx0, dy0);
+        p1.moved += Math.hypot(dx1, dy1);
+        const dist0 = Math.hypot(t0.clientX - p0.startX, t0.clientY - p0.startY);
+        const dist1 = Math.hypot(t1.clientX - p1.startX, t1.clientY - p1.startY);
+
+        if (twoFingerMode === null) {
+          // One finger held steady while the other drags -> Box Selection / Drag mode!
+          if (dist0 >= 10 && dist1 < 7) {
+            twoFingerMode = "select";
+            anchorFingerId = t1.identifier;
+            dragFingerId = t0.identifier;
+            buzz(18);
+            touchpad.classList.add("drag-active");
+            if (!dragLocked) sendAction({ t: "d", b: "left" });
+          } else if (dist1 >= 10 && dist0 < 7) {
+            twoFingerMode = "select";
+            anchorFingerId = t0.identifier;
+            dragFingerId = t1.identifier;
+            buzz(18);
+            touchpad.classList.add("drag-active");
+            if (!dragLocked) sendAction({ t: "d", b: "left" });
+          } else if (dist0 >= 9 && dist1 >= 9) {
+            twoFingerMode = "scroll";
+          }
+        }
+
+        if (twoFingerMode === "select") {
+          const dragT = (t0.identifier === dragFingerId) ? t0 : (t1.identifier === dragFingerId ? t1 : null);
+          const dragP = dragT ? activeTouches.get(dragT.identifier) : null;
+          if (dragT && dragP) {
+            const ddx = dragT.clientX - dragP.x;
+            const ddy = dragT.clientY - dragP.y;
+            totalMove += Math.hypot(ddx, ddy);
+            queueMove(ddx, ddy);
+          }
+        } else if (twoFingerMode === "scroll") {
+          const dy = (dy0 + dy1) / 2;
+          totalMove += Math.abs(dy);
+          animateWheel(dy);
+          scrollAcc += dy * scrollSpeed * (invertScroll ? -1 : 1);
+          if (Math.abs(scrollAcc) >= 6) {
+            const step = Math.trunc(scrollAcc * 10);
+            scrollAcc = 0;
+            sendAction({ t: "s", dy: step });
+          }
+        }
+
+        p0.x = t0.clientX; p0.y = t0.clientY;
+        p1.x = t1.clientX; p1.y = t1.clientY;
+      }
+    }
+  }, { passive: false });
+
+  function handleTouchFinish(e) {
+    e.preventDefault();
+    for (const t of e.changedTouches) {
+      activeTouches.delete(t.identifier);
+      if (twoFingerMode === "select") {
+        if (t.identifier === anchorFingerId) {
+          endTwoFingerSelect();
+        } else if (t.identifier === dragFingerId) {
+          dragFingerId = null;
+        }
+      }
+    }
+    if (activeTouches.size === 0) {
+      endTwoFingerSelect();
+      const elapsed = performance.now() - touchStartTime;
+      if (twoFingerMode === null && elapsed < 230 && totalMove < 12) {
+        if (maxFingerCount === 2) {
+          buzz(18);
+          sendAction({ t: "c", b: "right" });
+        } else if (maxFingerCount === 1) {
+          const now = performance.now();
+          buzz(10);
+          if (now - lastTapTime < 280) {
+            sendAction({ t: "c", b: "left", d: true });
+            lastTapTime = 0;
+          } else {
+            sendAction({ t: "c", b: "left" });
+            lastTapTime = now;
+          }
+        }
+      }
+      twoFingerMode = null;
+      maxFingerCount = 0;
+    }
+  }
+  touchpad.addEventListener("touchend", handleTouchFinish, { passive: false });
+  touchpad.addEventListener("touchcancel", handleTouchFinish, { passive: false });
+
+  // Dedicated Animated Scroll Wheel Strip
+  let stripLastY = null;
+  let stripAcc = 0;
+  scrollStrip.addEventListener("touchstart", (e) => {
+    e.preventDefault();
+    stripLastY = e.touches[0].clientY;
+    stripAcc = 0;
+    scrollStrip.classList.add("scrolling");
+  }, { passive: false });
+  scrollStrip.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    if (stripLastY === null) return;
+    const y = e.touches[0].clientY;
+    const dy = y - stripLastY;
+    stripLastY = y;
+    animateWheel(dy);
+    stripAcc += dy * scrollSpeed * (invertScroll ? -1 : 1);
+    if (Math.abs(stripAcc) >= 5) {
+      const step = Math.trunc(stripAcc * 12);
+      stripAcc = 0;
+      sendAction({ t: "s", dy: step });
+    }
+  }, { passive: false });
+  scrollStrip.addEventListener("touchend", () => {
+    stripLastY = null;
+    scrollStrip.classList.remove("scrolling", "dir-up", "dir-down");
+  });
+
+  // 3D Mouse Buttons
+  function bindMouseBtn(el, button) {
+    el.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      buzz(12);
+      el.classList.add("pressed");
+      sendAction({ t: "d", b: button });
+    }, { passive: false });
+    el.addEventListener("touchend", (e) => {
+      e.preventDefault();
+      el.classList.remove("pressed");
+      sendAction({ t: "u", b: button });
+    }, { passive: false });
+    el.addEventListener("touchcancel", () => el.classList.remove("pressed"));
+    el.addEventListener("mousedown", () => sendAction({ t: "c", b: button }));
+  }
+  bindMouseBtn(document.getElementById("btnLeft"), "left");
+  bindMouseBtn(document.getElementById("btnMiddle"), "middle");
+  bindMouseBtn(document.getElementById("btnRight"), "right");
+
+  let dragLocked = false;
+  const btnDragLock = document.getElementById("btnDragLock");
+  btnDragLock.addEventListener("click", () => {
+    dragLocked = !dragLocked;
+    buzz(16);
+    btnDragLock.classList.toggle("active", dragLocked);
+    touchpad.classList.toggle("drag-active", dragLocked);
+    sendAction({ t: dragLocked ? "d" : "u", b: "left" });
+  });
+
+  document.getElementById("btnDoubleClick").addEventListener("click", () => {
+    buzz(15);
+    sendAction({ t: "c", b: "left", d: true });
+  });
+
+  // Drawers
+  const drawers = {
+    btnKeyboard: document.getElementById("drawerKeyboard"),
+    btnMedia: document.getElementById("drawerMedia"),
+    btnSettings: document.getElementById("drawerSettings"),
+  };
+  Object.entries(drawers).forEach(([btnId, drawerEl]) => {
+    const btn = document.getElementById(btnId);
+    btn.addEventListener("click", () => {
+      const isOpen = drawerEl.classList.contains("open");
+      Object.entries(drawers).forEach(([id, el]) => {
+        el.classList.remove("open");
+        document.getElementById(id).classList.remove("active");
+      });
+      if (!isOpen) {
+        drawerEl.classList.add("open");
+        btn.classList.add("active");
+        if (btnId === "btnKeyboard") {
+          resetLiveInput();
+          setTimeout(() => textInput.focus(), 80);
+        }
+      }
+    });
+  });
+
+  document.getElementById("btnFullscreen").addEventListener("click", () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen?.().catch(() => {});
+    } else {
+      document.exitFullscreen?.().catch(() => {});
+    }
+  });
+
+  // Live Direct Typing (No Send button needed — supports sticky Ctrl/Alt/Win combos too!)
+  const textInput = document.getElementById("textInput");
+  const SENTINEL = "\u200B";
+  let prevLiveVal = SENTINEL;
+  let isComposing = false;
+
+  function resetLiveInput() {
+    prevLiveVal = SENTINEL;
+    textInput.value = SENTINEL;
+    try { textInput.setSelectionRange(1, 1); } catch (_) {}
+  }
+
+  function syncLiveInput() {
+    const cur = textInput.value;
+    if (cur === prevLiveVal) return;
+
+    if (cur.length === 0) {
+      sendAction({ t: "k", k: "backspace" });
+      resetLiveInput();
+      return;
+    }
+
+    const oldClean = prevLiveVal.startsWith(SENTINEL) ? prevLiveVal.slice(1) : prevLiveVal;
+    const newClean = cur.startsWith(SENTINEL) ? cur.slice(1) : cur;
+
+    let prefix = 0;
+    const minLen = Math.min(oldClean.length, newClean.length);
+    while (prefix < minLen && oldClean[prefix] === newClean[prefix]) {
+      prefix++;
+    }
+
+    const delCount = oldClean.length - prefix;
+    for (let i = 0; i < delCount; i++) {
+      sendAction({ t: "k", k: "backspace" });
+    }
+
+    const added = newClean.slice(prefix);
+    if (added) {
+      if (activeMods.size > 0 && added.length === 1 && /^[a-z0-9]$/i.test(added)) {
+        sendAction({ t: "cb", k: [...activeMods, added.toLowerCase()] });
+        clearMods();
+        resetLiveInput();
+        return;
+      }
+      sendAction({ t: "txt", v: added });
+    }
+
+    if (newClean.length >= 24 && newClean.endsWith(" ")) {
+      resetLiveInput();
+    } else {
+      prevLiveVal = cur.startsWith(SENTINEL) ? cur : SENTINEL + newClean;
+      if (!cur.startsWith(SENTINEL)) {
+        textInput.value = prevLiveVal;
+      }
+    }
+  }
+
+  textInput.addEventListener("focus", () => {
+    if (!textInput.value) resetLiveInput();
+  });
+  textInput.addEventListener("compositionstart", () => {
+    isComposing = true;
+  });
+  textInput.addEventListener("compositionend", () => {
+    isComposing = false;
+    syncLiveInput();
+  });
+  textInput.addEventListener("input", () => {
+    if (!isComposing) syncLiveInput();
+  });
+  textInput.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      buzz(10);
+      if (activeMods.size > 0) {
+        sendAction({ t: "cb", k: [...activeMods, "enter"] });
+        clearMods();
+      } else {
+        sendAction({ t: "k", k: "enter" });
+      }
+      resetLiveInput();
+    }
+  });
+
+  // Special Keys & Combos (automatically combines with any active sticky modifiers)
+  document.querySelectorAll("[data-key]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buzz(10);
+      const k = btn.dataset.key;
+      if (activeMods.size > 0) {
+        sendAction({ t: "cb", k: [...activeMods, k] });
+        clearMods();
+      } else {
+        sendAction({ t: "k", k });
+      }
+    });
+  });
+  document.querySelectorAll("[data-combo]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      buzz(14);
+      clearMods();
+      sendAction({ t: "cb", k: btn.dataset.combo.split(",") });
+    });
+  });
+
+  connectWS();
+})();
+</script>
+</body>
+</html>
